@@ -1,21 +1,51 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const users = [
-	{ name: "Sarah", age: 20 },
-	{ name: "James", age: 25 },
-	{ name: "Jack", age: 35 }
-]
+interface Users {
+	id?: number;
+	name: string;
+	username?: string;
+	email: string;
+	address: {
+		street: string;
+		suite?: string;
+		city: string;
+		zipcode: string;
+		geo?: {
+			lat?: string;
+			lng?: string;
+		}
+	},
+	phone: string;
+	website: string;
+	company?: {
+		name?: string;
+		catchPhrase?: string;
+		bs?: string
+	}
+}
 
 const UserSearch: React.FC = () => {
 	const [name, setName] = useState("");
-	const [user, setUser] = useState<{ name: string, age: number } | undefined>();
+	const [allUser, setAllUser] = useState<Users[] | undefined>();
+	const [user, setUser] = useState<Users | undefined>();
+
+	useEffect(() => {
+		axios.get<Users[]>('https://jsonplaceholder.typicode.com/users')
+			.then(response => {
+				console.log(response.data);
+				setAllUser(response.data);
+			});
+	}, [])
 
 	function onClick() {
-		const foundUser = users.find(user => {
-			return user.name === name
-		});
+		if (allUser) {
+			const foundUser = allUser.find(user => {
+				return user.name.split(" ")[0] === name || user.name.split(" ")[1] === name || user.name.split(" ")[2] === name
+			});
 
-		setUser(foundUser);
+			setUser(foundUser);
+		}
 	}
 
 	return (
@@ -24,8 +54,24 @@ const UserSearch: React.FC = () => {
 			<input type="text" value={name} onChange={e => setName(e.target.value)} />
 			<button onClick={onClick}>Find User</button>
 			<div>
-				{user && user.name}
-				{user && user.age}
+				<h4>Our users:</h4>
+				{allUser &&
+					allUser.map(item => item.name).join(", ")
+				}
+			</div><br />
+			<div>
+				{user ?
+					<div>
+						{user.name}: <br />
+						<ul>
+							<li>Email: {user.email}</li>
+							<li>Address: {user.address.zipcode} {user.address.city}, {user.address.street} str.</li>
+							<li>Phone: {user.phone}</li>
+							<li>Website: {user.website}</li>
+						</ul>
+					</div>
+					: null
+				}
 			</div>
 		</div>
 	)
