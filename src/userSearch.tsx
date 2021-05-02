@@ -25,13 +25,15 @@ interface Users {
 	}
 }
 
+type TUserList = Users[]
+
 const UserSearch: React.FC = () => {
 	const [name, setName] = useState("");
-	const [allUser, setAllUser] = useState<Users[] | undefined>();
+	const [allUser, setAllUser] = useState<TUserList | undefined>();
 	const [user, setUser] = useState<Users | undefined>();
 
 	useEffect(() => {
-		axios.get<Users[]>('https://jsonplaceholder.typicode.com/users')
+		axios.get<TUserList>('https://jsonplaceholder.typicode.com/users')
 			.then(response => {
 				console.log(response.data);
 				setAllUser(response.data);
