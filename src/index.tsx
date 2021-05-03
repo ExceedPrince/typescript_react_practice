@@ -42,13 +42,9 @@ const Index = () => {
 			});
 	}, [])
 
-	function newUser(param: TUserList) {
-		setAllUser(param)
-	}
-
 	return (
 		<>
-			<GuestList allUser={allUser} newUser={newUser} />
+			<GuestList allUser={allUser} newUser={setAllUser} />
 			<UserSearch allUser={allUser} />
 		</>
 	)
