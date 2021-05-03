@@ -41,19 +41,21 @@ const UserSearch: React.FC = () => {
 	}, [])
 
 	function onClick() {
-		if (allUser) {
+		if (allUser && name.length > 2) {
 			const foundUser = allUser.find(user => {
-				return user.name.split(" ")[0] === name || user.name.split(" ")[1] === name || user.name.split(" ")[2] === name
+				return user.name.toLowerCase().indexOf(name) > - 1
 			});
 
 			setUser(foundUser);
+		} else {
+			setUser(undefined);
 		}
 	}
 
 	return (
 		<div>
 			<h2>User Search</h2>
-			<input type="text" value={name} onChange={e => setName(e.target.value)} />
+			<input type="text" minLength={+"3"} value={name} onChange={e => setName(e.target.value)} required />
 			<button onClick={onClick}>Find User</button>
 			<div>
 				<h4>Our users:</h4>
